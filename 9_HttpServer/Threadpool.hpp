@@ -11,12 +11,12 @@ class Task{
     public:
     Task(int sock_,handler_t handler_):sock(sock_),handler(handler_)
     {
-        cout<<"Task sussecss!"<<endl;
+        //cout<<"Task sussecss!"<<endl;
     }
     void Run()
     {
-        cout<<"Task Run!"<<endl;
-    handler(sock);
+        //cout<<"Task Run!"<<endl;
+        handler(sock);
     }
     ~Task()
     {
@@ -37,10 +37,6 @@ class Threadpool
      pthread_mutex_init(&lock,NULL);
      pthread_cond_init(&cond,NULL);
      }
-   //  queue<Task>& Gettask_queue()
-   //  {
-   //  return task_queue;
-   //  }
      void InitThreadpool()
      {
          pthread_t p;
@@ -51,28 +47,22 @@ class Threadpool
      }
       static void *ThreadRoutine(void * arg)
      {
-         cout<<"ThreadpoolRoutine!"<<endl;
       pthread_detach(pthread_self());//detach
       Threadpool * tp=(Threadpool *)arg;
       while(true)
       {
         tp->Lockqueue();
-        cout<<"Lock!"<<endl;
         while(tp->Queueisempty())
         {
-            cout<<"1"<<endl;
          tp->Pthreadwait();   
         }
-        cout<<"2"<<endl;
         Task t=tp->PopTask();
         tp->Unlockqueue();
-        cout<<"Unlock!"<<endl;
         t.Run();
       }
      }
     void Pthread_signal()
-    {
-        cout<<"3"<<endl;
+   {
     pthread_cond_signal(&cond);
     }
 
@@ -94,7 +84,6 @@ class Threadpool
      void PushTask(Task & t)
      {
       nowsize++;
-      cout<<"coming PushTask()"<<endl;
       task_queue.push(t);
       Pthread_signal();
      }
